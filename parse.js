@@ -28,6 +28,7 @@ async function parse(filepath) {
       } catch (err) {
         console.error('tshark fail')
         console.error(err)
+        reject(err)
       }
     })
   })
