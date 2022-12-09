@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "pino": "^8.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
