@@ -1,11 +1,11 @@
+require('dotenv').config()
 const fs = require('fs/promises')
-const path = require('path')
 const chokidar = require('chokidar')
 const logger = require('pino')()
 const parse = require('./parse')
 const { Queue } = require('./queue')
 
-const dir = 'C:\\Users\\Artem\\source\\repos\\resourcelock\\dumps'
+const dir = process.env.dir
 
 logger.info('Started!')
 
@@ -13,7 +13,7 @@ const queue = Queue.channels(2)
   .process(processFile)
   .validate(isUnlocked)
   .success((res) => {
-    console.log(res.length)
+    logger.info(res.length)
   })
   .failure(async (err, filepath) => {
     try {
@@ -26,7 +26,7 @@ const queue = Queue.channels(2)
   .done(async (filepath) => {
     try {
       await fs.unlink(filepath)
-      logger.info(filepath, 'deleted!')
+      logger.debug(filepath, 'deleted!')
     } catch (err) {
       logger.error(err, 'onDone error')
     }
@@ -48,7 +48,7 @@ async function isUnlocked (filepath) {
   try {
     const fd = await fs.open(filepath, fs.constants.O_RDONLY | 0x10000000)
     await fd.close()
-    console.log('access allowed', filepath)
+    logger.debug('access allowed', filepath)
     return true
   } catch (err) {
     logger.error(err, 'isLocked err')
